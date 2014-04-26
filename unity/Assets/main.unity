@@ -333,10 +333,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b58129e086248d59c85f147ceb9bf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSpawner: {fileID: 1993314136}
+  map: {fileID: 1993314136}
   levelMapSrcs:
   - {fileID: 4900000, guid: d589b8c4d9dfc40359c89a860bf6e198, type: 3}
   startScreen: {fileID: 303303572}
+  wormSegPrefab: {fileID: 100000, guid: 809de2b0cd11f44428413f8c7e544e27, type: 2}
+  bump: {fileID: 8300000, guid: 4d9724ac814794f22838564283d3c5b1, type: 3}
+  move: {fileID: 8300000, guid: 2140f1174999b46caacf56eed42f7c94, type: 3}
+  grow: {fileID: 8300000, guid: 59d3e91d321694fe08dcb8a7262c2514, type: 3}
 --- !u!4 &1692764910
 Transform:
   m_ObjectHideFlags: 0
@@ -380,6 +384,8 @@ MonoBehaviour:
     prefab: {fileID: 100000, guid: c3ce626159cfd471ebcac93424f218d7, type: 2}
   - character: s
     prefab: {fileID: 100000, guid: 809de2b0cd11f44428413f8c7e544e27, type: 2}
+  - character: f
+    prefab: {fileID: 100000, guid: 4bc31f922e51b423cb42665053013607, type: 2}
   entsRoot: {fileID: 0}
 --- !u!4 &1993314137
 Transform:

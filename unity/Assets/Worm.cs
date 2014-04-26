@@ -5,38 +5,20 @@ using SteveSharp;
 public class Worm : MonoBehaviour
 {
     public GridEntity ent;
+    public GameObject segmentPrefab;
 
-    public AudioClip bump;
-    public AudioClip move;
+    public bool isHead = false;
 
-    void Start()
+    void Awake()
     {
         ent = GetComponent<GridEntity>();
     }
 
     void Update()
     {
-        if( InputStack.IsActive(this) )
-        {
-            int dr = 0;
-            int dc = 0;
-
-            if( Input.GetKeyDown(KeyCode.W) )
-                dr -= 1;
-            if( Input.GetKeyDown(KeyCode.S) )
-                dr += 1;
-            if( Input.GetKeyDown(KeyCode.A) )
-                dc -= 1;
-            if( Input.GetKeyDown(KeyCode.D) )
-                dc += 1;
-
-            if( dr != 0 || dc != 0 )
-            {
-            if( !ent.TryMove(dr,dc) )
-                AudioSource.PlayClipAtPoint( bump, transform.position );
-            else
-                AudioSource.PlayClipAtPoint( move, transform.position );
-            }
-        }
+        if( isHead )
+            transform.localScale = new Vector3(1,1,1);
+        else
+            transform.localScale = new Vector3(0.5f,0.5f,0.5f);
     }
 }

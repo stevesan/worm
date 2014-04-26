@@ -87,4 +87,36 @@ public class MapSpawner : MonoBehaviour
             }
         }
     }
+
+    public void RemoveEntity( GridEntity ent )
+    {
+        if( grid[ent.row, ent.col] != ent )
+            Debug.LogError("grid mgmt problem");
+        else
+            grid[ent.row, ent.col] = null;
+    }
+
+    public GameObject SpawnPrefab( GameObject prefab, int row, int col )
+    {
+        GameObject inst = null;
+
+        if( !prefab.GetComponent<GridEntity>() )
+            Debug.LogError("No GridEntity component on entity prefab "+prefab.name);
+        else if( !grid.CheckBounds(row,col) )
+            Debug.LogError("tried to spawn "+prefab.name+" out of bounds "+row+", "+col);
+        else if( grid[row, col] != null )
+            Debug.LogError("tried to spawn "+prefab.name+" over occupied cell ("+row+", "+col+") already occupied by "+grid[row,col].gameObject.name);
+        else
+        {
+            inst = (GameObject)GameObject.Instantiate(prefab);
+            inst.transform.parent = entsRoot.transform;
+            var ent = inst.GetComponent<GridEntity>();
+            grid[row,col] = ent;
+            ent.row = row;
+            ent.col = col;
+            ent.host = this;
+        }
+
+        return inst;
+    }
 }
