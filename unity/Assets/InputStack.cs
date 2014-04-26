@@ -27,7 +27,7 @@ public class InputStack : MonoBehaviour
 
     public static void Pop( MonoBehaviour comp )
     {
-        if( main.stack.Peek() == comp )
+        if( main.stack.Count > 0 && main.stack.Peek() == comp )
         {
             main.stack.Pop();
 

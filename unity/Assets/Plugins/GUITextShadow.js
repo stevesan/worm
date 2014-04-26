@@ -6,13 +6,12 @@ public var shadowColor = Color.black;
 private var shadow:GameObject;
 private var shadowText:GUIText;
 
-// Important to do this on Start and NOT Awake..because Awake is called when we instantiate
 function Start()
 {
     if( shadow == null )
     {
         shadow = new GameObject(gameObject.name+"-textshadow");
-        shadow.transform.parent = this.transform.parent;
+        shadow.transform.parent = this.transform;
         shadowText = shadow.AddComponent(GUIText);
     }
 }
@@ -39,7 +38,10 @@ function LateUpdate()
         shadow.transform.position = Vector3(
                 myPos.x + offsetPixels.x/Screen.width,
                 myPos.y + offsetPixels.y/Screen.height,
-                // IMPORTANT: Unity GUI respects the LOCAL Z for some reason....
+                0 );
+        shadow.transform.localPosition = Vector3(
+                shadow.transform.localPosition.x,
+                shadow.transform.localPosition.y,
                 transform.localPosition.z - 0.01f
                 );
     }

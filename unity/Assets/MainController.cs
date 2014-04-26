@@ -6,15 +6,10 @@ public class MainController : MonoBehaviour {
     public MapSpawner[] levels;
     public GameObject startScreen;
 
-	// Use this for initialization
-	void OnEnable() {
+	void Start()
+    {
         InputStack.Push(this);
 	}
-
-    void OnDisable()
-    {
-        InputStack.Pop(this);
-    }
 
     string state = "start";
 	
