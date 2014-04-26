@@ -7,9 +7,15 @@ public class GridEntity : MonoBehaviour
     public int row;
     public int col;
 
+    public Int2 pos { get { return new Int2(row,col); } }
+
     [HideInInspector]
     public MapSpawner host;
 
+    public bool CanMove( Int2 delta )
+    {
+        return CanMove(delta.x, delta.y);
+    }
     public bool CanMove( int dr, int dc )
     {
         return host.grid.CheckBounds( row+dr, col+dc )
@@ -22,6 +28,11 @@ public class GridEntity : MonoBehaviour
         row += dr;
         col += dc;
         host.grid[row, col] = this;
+    }
+
+    public bool TryMove( Int2 delta )
+    {
+        return TryMove( delta.row, delta.col );
     }
 
     public bool TryMove( int dr, int dc )

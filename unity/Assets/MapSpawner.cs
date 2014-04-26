@@ -27,8 +27,20 @@ public class MapSpawner : MonoBehaviour
         }
     }
 
+    public void Clear()
+    {
+        if( grid != null )
+            grid = null;
+
+        if( entsRoot != null )
+            Destroy(entsRoot);
+        entsRoot = null;
+    }
+
     public void Spawn(string src)
     {
+        Clear();
+
         entsRoot = new GameObject("map root");
         entsRoot.transform.parent = transform;
         entsRoot.transform.IdentityLocals();

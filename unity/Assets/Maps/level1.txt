@@ -1,11 +1,11 @@
 bbbbbbbbbbbbbbbb
 bs..f..........b
 b...f..........b
-b.....bbbbbbbbbb
-b.......f......b
-b.....bbbbbbbbbb
-b..............b
-b..............b
+b....bbbbbb....b
+b....b..f.b....b
+b....bbbbbb....b
+b....b....b....b
+b....bbbbbb....b
 b..f..f..f.....b
 b..............b
 b....H.........b
