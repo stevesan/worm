@@ -379,7 +379,8 @@ MonoBehaviour:
   - character: b
     prefab: {fileID: 100000, guid: c3ce626159cfd471ebcac93424f218d7, type: 2}
   - character: s
-    prefab: {fileID: 100000, guid: d18c75ce61a04491c957ae0400e8d021, type: 2}
+    prefab: {fileID: 100000, guid: 809de2b0cd11f44428413f8c7e544e27, type: 2}
+  entsRoot: {fileID: 0}
 --- !u!4 &1993314137
 Transform:
   m_ObjectHideFlags: 0

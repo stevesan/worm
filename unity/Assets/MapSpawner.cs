@@ -12,7 +12,9 @@ public class MapSpawner : MonoBehaviour
     }
     public List<EntityMapping> entMappings;
 
-    GameObject[,] grid;
+    public GridEntity[,] grid { get; private set; }
+
+    public GameObject entsRoot = null;
 
     Dictionary<string, GameObject> entMappingsFast;
 
@@ -27,16 +29,16 @@ public class MapSpawner : MonoBehaviour
 
     public void Spawn(string src)
     {
-        var root = new GameObject("map root");
-        root.transform.parent = transform;
-        root.transform.IdentityLocals();
+        entsRoot = new GameObject("map root");
+        entsRoot.transform.parent = transform;
+        entsRoot.transform.IdentityLocals();
 
-        int row = 0;
-        int col = 0;
-        var spawned = new List<GameObject>();
+        int numRows = 0;
+        int numCols = 0;
+        var spawned = new List<GridEntity>();
         foreach( string line in src.Split(new char[]{'\n'}) )
         {
-            col = 0;
+            int cols = 0;
 
             foreach( char c in line )
             {
@@ -44,28 +46,45 @@ public class MapSpawner : MonoBehaviour
                 if( entMappingsFast.ContainsKey(cs) )
                 {
                     var prefab = entMappingsFast[cs];
-                    var inst = (GameObject)GameObject.Instantiate(prefab);
-                    inst.transform.parent = root.transform;
-                    inst.transform.IdentityLocals();
-                    inst.transform.localPosition = new Vector3(col, -row, 0);
-                    spawned.Add(inst);
+
+                    if( !prefab.GetComponent<GridEntity>() )
+                        Debug.LogError("No GridEntity component on entity prefab "+prefab.name);
+                    else
+                    {
+                        var inst = (GameObject)GameObject.Instantiate(prefab);
+                        inst.transform.parent = entsRoot.transform;
+                        spawned.Add(inst.GetComponent<GridEntity>());
+                    }
                 }
                 else
                     spawned.Add(null);
 
-                col += 1;
+                cols += 1;
             }
 
-            row += 1;
+            if( cols > 0 )
+            {
+                numCols = Mathf.Max( cols, numCols );
+                numRows += 1;
+            }
         }
 
-        int numRows = row;
-        int numCols = col;
+        Debug.Log("size = "+numRows+", "+numCols);
+
         int spawnedId = 0;
-        grid = new GameObject[numRows, numCols];
+        grid = new GridEntity[numRows, numCols];
 
         for( int r = 0; r < numRows; r++ )
         for( int c = 0; c < numCols; c++ )
+        {
             grid[r,c] = spawned[spawnedId++];
+            if( grid[r,c] != null )
+            {
+                grid[r,c].host = this;
+                //Debug.Log("setting "+grid[r,c].gameObject.name+" to "+r+","+c);
+                grid[r,c].row = r;
+                grid[r,c].col = c;
+            }
+        }
     }
 }

@@ -24,6 +24,17 @@ public class MainController : MonoBehaviour {
                 state = "play";
                 startScreen.SetActive(false);
                 mapSpawner.Spawn(levelMapSrcs[0].text);
+
+                // find the player and make it active
+                var p = mapSpawner.entsRoot.GetComponentInChildren<Worm>();
+                InputStack.Push(p);
+                Debug.Log("found player ent = "+p.gameObject.name);
+            }
+        }
+        else if( state == "play" )
+        {
+            if( InputStack.IsActive(this) && Input.GetKeyDown(KeyCode.Space) )
+            {
             }
         }
 	
