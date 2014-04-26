@@ -3,7 +3,8 @@ using System.Collections;
 
 public class MainController : MonoBehaviour {
 
-    public MapSpawner[] levels;
+    public MapSpawner mapSpawner;
+    public TextAsset[] levelMapSrcs;
     public GameObject startScreen;
 
 	void Start()
@@ -22,6 +23,7 @@ public class MainController : MonoBehaviour {
             {
                 state = "play";
                 startScreen.SetActive(false);
+                mapSpawner.Spawn(levelMapSrcs[0].text);
             }
         }
 	

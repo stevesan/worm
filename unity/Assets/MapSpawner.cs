@@ -4,9 +4,6 @@ using SteveSharp;
 
 public class MapSpawner : MonoBehaviour
 {
-    public TextAsset mapsrc;
-    public bool autoSpawn = false;
-
     [System.Serializable]
     public class EntityMapping
     {
@@ -15,6 +12,7 @@ public class MapSpawner : MonoBehaviour
     }
     public List<EntityMapping> entMappings;
 
+    GameObject[,] grid;
 
     Dictionary<string, GameObject> entMappingsFast;
 
@@ -27,23 +25,18 @@ public class MapSpawner : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        if( autoSpawn )
-            Spawn();
-    }
-
-    public void Spawn()
+    public void Spawn(string src)
     {
         var root = new GameObject("map root");
         root.transform.parent = transform;
         root.transform.IdentityLocals();
 
-        float x = 0;
-        float y = 0;
-        foreach( string line in mapsrc.text.Split(new char[]{'\n'}) )
+        int row = 0;
+        int col = 0;
+        var spawned = new List<GameObject>();
+        foreach( string line in src.Split(new char[]{'\n'}) )
         {
-            x = 0;
+            col = 0;
 
             foreach( char c in line )
             {
@@ -53,13 +46,26 @@ public class MapSpawner : MonoBehaviour
                     var prefab = entMappingsFast[cs];
                     var inst = (GameObject)GameObject.Instantiate(prefab);
                     inst.transform.parent = root.transform;
-                    inst.transform.localPosition = new Vector3(x, y, 0);
+                    inst.transform.IdentityLocals();
+                    inst.transform.localPosition = new Vector3(col, -row, 0);
+                    spawned.Add(inst);
                 }
+                else
+                    spawned.Add(null);
 
-                x += 1;
+                col += 1;
             }
 
-            y -= 1;
+            row += 1;
         }
+
+        int numRows = row;
+        int numCols = col;
+        int spawnedId = 0;
+        grid = new GameObject[numRows, numCols];
+
+        for( int r = 0; r < numRows; r++ )
+        for( int c = 0; c < numCols; c++ )
+            grid[r,c] = spawned[spawnedId++];
     }
 }
