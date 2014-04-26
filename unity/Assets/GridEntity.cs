@@ -53,6 +53,7 @@ public class GridEntity : MonoBehaviour
         transform.localPosition = new Vector3(col, -row, 0); 
     }
 
+    public GridEntity Peek( Int2 u ) { return Peek(u.row, u.col); }
     public GridEntity Peek( int dr, int dc )
     {
         if( host.grid.CheckBounds(row+dr, col+dc) )

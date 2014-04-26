@@ -29,12 +29,20 @@ public class Rolly : MonoBehaviour {
         {
             Int2 want = ent.pos + flip*delta;
 
-            if( ent.CanMove(flip*delta) )
-                ent.TryMove( flip*delta );
-            else
+            if( !ent.TryMove( flip*delta ) )
             {
-                flip *= -1;
-                ent.TryMove( flip*delta );
+                var other = ent.Peek( flip*delta );
+                // we hit a player?
+                if( other.GetComponent<Worm>() != null )
+                {
+                    MainController.main.OnWormHit( other.GetComponent<Worm>(), gameObject );
+                }
+                else
+                {
+                    // a wall. turn around
+                    flip *= -1;
+                    ent.TryMove( flip*delta );
+                }
             }
             moveTimer = secsPerMove;
         }

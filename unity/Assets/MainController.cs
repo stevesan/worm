@@ -3,15 +3,20 @@ using System.Collections.Generic;
 
 public class MainController : MonoBehaviour {
 
+    public static MainController main = null;
+
     public MapSpawner map;
     public TextAsset[] levelMapSrcs;
     public GameObject startScreen;
     public GameObject debriefScreen;
+    public GameObject deathScreen;
 
     public GameObject wormSegPrefab;
     public AudioClip bump;
     public AudioClip move;
     public AudioClip grow;
+    public AudioClip reverse;
+    public AudioClip die;
     public float repeatPeriod = 0.1f;
 
     float repeatTimer = 0f;
@@ -22,11 +27,27 @@ public class MainController : MonoBehaviour {
     List<Worm> tail = new List<Worm>();
     Worm head;
 
+    void Awake()
+    {
+        main = this;
+    }
+
+    public void OnWormHit( Worm victim, GameObject hitter )
+    {
+        if( state == "level" )
+        {
+            state = "dead";
+            deathScreen.SetActive(true);
+            AudioSource.PlayClipAtPoint( die, transform.position );
+        }
+    }
+
     void Start()
     {
         InputStack.Push(this);
 
         debriefScreen.SetActive(false);
+        deathScreen.SetActive(false);
         startScreen.SetActive(true);
     }
 
@@ -49,6 +70,8 @@ public class MainController : MonoBehaviour {
         head = map.entsRoot.GetComponentInChildren<Worm>();
         head.isHead = true;
         Debug.Log("found player ent = "+head.gameObject.name);
+
+        tail.Clear();
         
         state = "level";
     }
@@ -70,7 +93,15 @@ public class MainController : MonoBehaviour {
             //----------------------------------------
             //  Handle player input
             //----------------------------------------
-            UpdatePlayerMove();
+            InLevelUpdate();
+        }
+        else if( state == "dead" )
+        {
+            if( InputStack.IsActive(this) && Input.GetKeyDown(KeyCode.Space) )
+            {
+                deathScreen.SetActive(false);
+                SwitchLevel(currLevel);
+            }
         }
         else if( state == "debrief" )
         {
@@ -92,7 +123,7 @@ public class MainController : MonoBehaviour {
         }
     }
 
-    void UpdatePlayerMove()
+    void InLevelUpdate()
     {
         if( !InputStack.IsActive(this) )
             return;
@@ -110,24 +141,29 @@ public class MainController : MonoBehaviour {
             tail.RemoveAt(tail.Count-1);
             tail.Reverse();
             tail.Add(oldHead);
+            AudioSource.PlayClipAtPoint( reverse, transform.position );
         }
 
         repeatTimer -= Time.deltaTime;
 
-        if( Input.GetKeyDown(KeyCode.LeftShift) )
-            repeatTimer = -1;
-        bool run = Input.GetKey(KeyCode.LeftShift);
-
         int dr = 0;
         int dc = 0;
 
-        if( Input.GetKeyDown(KeyCode.W) || (repeatTimer < 0 && Input.GetKey(KeyCode.W) && run) )
+        /*
+        if( Input.GetKeyDown(KeyCode.W)
+                || Input.GetKeyDown(KeyCode.A)
+                || Input.GetKeyDown(KeyCode.S)
+                || Input.GetKeyDown(KeyCode.D) )
+            repeatTimer = -1;
+            */
+
+        if( (repeatTimer < 0 && Input.GetKey(KeyCode.W) ) )
             dr -= 1;
-        if( Input.GetKeyDown(KeyCode.S) || (repeatTimer < 0 && Input.GetKey(KeyCode.S) && run) )
+        else if( (repeatTimer < 0 && Input.GetKey(KeyCode.S) ) )
             dr += 1;
-        if( Input.GetKeyDown(KeyCode.A) || (repeatTimer < 0 && Input.GetKey(KeyCode.A) && run) )
+        else if( (repeatTimer < 0 && Input.GetKey(KeyCode.A) ) )
             dc -= 1;
-        if( Input.GetKeyDown(KeyCode.D) || (repeatTimer < 0 && Input.GetKey(KeyCode.D) && run) )
+        else if( (repeatTimer < 0 && Input.GetKey(KeyCode.D) ) )
             dc += 1;
 
         if( dr != 0 || dc != 0 )
@@ -182,12 +218,14 @@ public class MainController : MonoBehaviour {
                     }
                 }
             }
+
+            //----------------------------------------
+            //  reset timer
+            //  Do NOT do this if we did not move..
+            //----------------------------------------
+            if( repeatTimer < 0 )
+                repeatTimer = repeatPeriod;
         }
 
-        //----------------------------------------
-        //  reset timer
-        //----------------------------------------
-        if( repeatTimer < 0 )
-            repeatTimer = repeatPeriod;
     }
 }
