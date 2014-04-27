@@ -308,31 +308,17 @@ public class MainController : MonoBehaviour {
                     grew = true;
                 }
 
-                int lastSegRow = head.ent.row;
-                int lastSegCol = head.ent.col;
+                Int2 endPos = activeWorm.GetLast().ent.pos;
 
-                if( !head.ent.TryMove(dr,dc) )
+                if( !TryMoveWorm(activeWorm, new Int2(dr,dc) ) )
                     AudioSource.PlayClipAtPoint( bump, transform.position );
                 else
                 {
-                    //AudioSource.PlayClipAtPoint( move, transform.position );
-
-                    // move all worm segments
-                    for( int i = 1; i < activeWorm.Count; i++ )
+                    if( grew )
                     {
-                        var seg = activeWorm[i];
-                        int r = seg.ent.row;
-                        int c = seg.ent.col;
-                        seg.ent.TryMove(lastSegRow-seg.ent.row, lastSegCol-seg.ent.col);
-                        lastSegRow = r;
-                        lastSegCol = c;
+                        var newSeg = map.SpawnPrefab( wormSegPrefab, endPos.row, endPos.col );
+                        activeWorm.Add(newSeg.GetComponent<Seg>());
                     }
-                }
-
-                if( grew )
-                {
-                    var newObj = map.SpawnPrefab( wormSegPrefab, lastSegRow, lastSegCol );
-                    activeWorm.Add(newObj.GetComponent<Seg>());
                 }
             }
 
@@ -344,6 +330,28 @@ public class MainController : MonoBehaviour {
                 repeatTimer = repeatPeriod;
         }
 
+    }
+
+    bool TryMoveWorm( List<Seg> worm, Int2 delta )
+    {
+        Seg head = worm.GetFirst();
+        Int2 nextDest = head.ent.pos;
+
+        if( !head.ent.TryMove(delta) )
+            return false;
+        else
+        {
+            // move all worm segments
+            for( int i = 1; i < worm.Count; i++ )
+            {
+                var seg = worm[i];
+                Int2 temp = seg.ent.pos;
+                seg.ent.TryMove(nextDest - seg.ent.pos);
+                nextDest = temp;
+            }
+
+            return true;
+        }
     }
 
     bool RemergeTail( Seg hit )

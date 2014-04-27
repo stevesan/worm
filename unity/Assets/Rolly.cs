@@ -105,9 +105,15 @@ public class Rolly : MonoBehaviour {
         }
 
         if( seesPlayer )
+        {
+            ent.smoothTime = alertSecsPerMove;
             transform.localScale = new Vector3(1.2f, 1.2f, 1f);
+        }
         else
+        {
+            ent.smoothTime = secsPerMove;
             transform.localScale = new Vector3(1f, 1f, 1f);
+        }
 
 	}
 }

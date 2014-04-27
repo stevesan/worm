@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e371f1780671f4b5f86c8150b2ca78cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smoothTime: .100000001
   row: 0
   col: 0
   host: {fileID: 0}

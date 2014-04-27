@@ -4,6 +4,7 @@ using SteveSharp;
 
 public class GridEntity : MonoBehaviour
 {
+    public float smoothTime = 0.02f;
     public int row;
     public int col;
 
@@ -62,7 +63,7 @@ public class GridEntity : MonoBehaviour
                 transform.localPosition,
                 new Vector3(col, -row, 0),
                 ref transVel,
-                0.02f);
+                smoothTime);
     }
 
     public GridEntity Peek( Int2 u ) { return Peek(u.row, u.col); }

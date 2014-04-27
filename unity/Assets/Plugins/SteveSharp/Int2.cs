@@ -24,5 +24,10 @@ namespace SteveSharp
         {
             return new Int2(u.x + v.x, u.y + v.y);
         }
+
+        public static Int2 operator - ( Int2 u, Int2 v )
+        {
+            return new Int2(u.x - v.x, u.y - v.y);
+        }
     }
 }
