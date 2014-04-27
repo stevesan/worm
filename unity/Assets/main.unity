@@ -198,7 +198,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 303303572}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .5, y: .5, z: -.013671875}
+  m_LocalPosition: {x: .5, y: .600000024, z: -.013671875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488912575}
@@ -320,7 +320,7 @@ GUIText:
   m_GameObject: {fileID: 658997342}
   m_Enabled: 1
   serializedVersion: 3
-  m_Text: SPACEBAR TO START
+  m_Text: '"What a thrill..."'
   m_Anchor: 4
   m_Alignment: 1
   m_PixelOffset: {x: 0, y: 0}
@@ -342,7 +342,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 658997342}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .5, y: .385794342, z: -.013671875}
+  m_LocalPosition: {x: .5, y: .5, z: -.013671875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488912575}
@@ -527,6 +527,7 @@ Transform:
   m_Children:
   - {fileID: 658997345}
   - {fileID: 303303575}
+  - {fileID: 1867204458}
   m_Father: {fileID: 0}
 --- !u!1 &1511609474
 GameObject:
@@ -655,6 +656,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: f489236d189de4643aecb3d1be723178, type: 3}
   - {fileID: 4900000, guid: d692ef1456bdb404da3d9c6bd676e903, type: 3}
   - {fileID: 4900000, guid: 7f2cbafc0b2c847ed83317d2ab5355d3, type: 3}
+  - {fileID: 4900000, guid: 1b15b8c8ed98a4b75a889c93f8406a84, type: 3}
   startScreen: {fileID: 1488912574}
   debriefScreen: {fileID: 786543098}
   deathScreen: {fileID: 1554481686}
@@ -730,6 +732,70 @@ GUIText:
   m_Enabled: 1
   serializedVersion: 3
   m_Text: SPACEBAR TO CONTINUE
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: d2a3e90e51a1f45339a904e63dd29062, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 32
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_PixelCorrect: 1
+  m_RichText: 1
+--- !u!1 &1867204457
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1867204458}
+  - 132: {fileID: 1867204460}
+  - 114: {fileID: 1867204459}
+  m_Layer: 0
+  m_Name: space
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1867204458
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1867204457}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .5, y: .25, z: -.0136719998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1488912575}
+--- !u!114 &1867204459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1867204457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offsetPixels: {x: 1, y: -1}
+  shadowColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!132 &1867204460
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1867204457}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: SPACEBAR TO START
   m_Anchor: 4
   m_Alignment: 1
   m_PixelOffset: {x: 0, y: 0}

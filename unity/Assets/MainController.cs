@@ -29,16 +29,27 @@ public class MainController : MonoBehaviour {
     //----------------------------------------
     //  Game stuff
     //----------------------------------------
-    HashSet< List<Worm> > detachedTails = new HashSet< List<Worm> >();
-    List<Worm> tail = new List<Worm>();
-    Worm head;
+    HashSet< List<Seg> > worms = new HashSet< List<Seg> >();
+    List<Seg> activeWorm = new List<Seg>();
+    Dictionary<int, List<Seg> > key2worm = new Dictionary<int, List<Seg>>();
+    Dictionary<List<Seg>, int > worm2key = new Dictionary<List<Seg>, int>();
 
     void Awake()
     {
         main = this;
     }
 
-    public void OnWormHit( Worm victim, GameObject hitter )
+    int GetFreeWormKey()
+    {
+        for( int key = 1; key < 9; key++ )
+        {
+            if( !key2worm.ContainsKey(key) )
+                return key;
+        }
+        return -1;
+    }
+
+    public void OnWormSegHit( Seg victim, GameObject hitter )
     {
         if( state == "level" )
         {
@@ -69,16 +80,23 @@ public class MainController : MonoBehaviour {
         }
 
         currLevel = level;
-
         map.Spawn(levelMapSrcs[level].text);
 
-        // find the player and make it active
-        head = map.entsRoot.GetComponentInChildren<Worm>();
-        head.isHead = true;
-        Debug.Log("found player ent = "+head.gameObject.name);
+        activeWorm.Clear();
+        worms.Clear();
+        key2worm.Clear();
+        worm2key.Clear();
 
-        tail.Clear();
-        detachedTails.Clear();
+        // find the player and make it active
+        var head = map.entsRoot.GetComponentInChildren<Seg>();
+        Debug.Log("found player ent = "+head.gameObject.name);
+        head.isHead = true;
+        head.isActive = true;
+        activeWorm = new List<Seg>();
+        activeWorm.Add(head);
+        worms.Add(activeWorm);
+        key2worm[1] = activeWorm;
+        worm2key[activeWorm] = 1;
         
         state = "level";
     }
@@ -151,41 +169,68 @@ public class MainController : MonoBehaviour {
         //----------------------------------------
         if( Input.GetKeyDown(KeyCode.R) )
         {
-            if( tail.Count == 0 )
+            if( activeWorm.Count == 0 )
                 AudioSource.PlayClipAtPoint( error, transform.position );
             else
             {
                 // reverse head/tail
-                var oldHead = head;
-                head.isHead = false;
-                head = tail[tail.Count-1];
-                head.isHead = true;
-                tail.RemoveAt(tail.Count-1);
-                tail.Reverse();
-                tail.Add(oldHead);
+                activeWorm.GetFirst().isHead = false;
+                activeWorm.Reverse();
+                activeWorm.GetFirst().isHead = true;
                 AudioSource.PlayClipAtPoint( reverse, transform.position );
             }
         }
 
         if( Input.GetKeyDown(KeyCode.Space) )
         {
-            if( tail.Count == 0 )
+            if( activeWorm.Count == 0 )
                 AudioSource.PlayClipAtPoint( error, transform.position );
             else
             {
                 // split in two!
-                int totalSegs = tail.Count + 1;
+                int totalSegs = activeWorm.Count;
                 int numInNew = totalSegs / 2;
-                int numInOld = totalSegs - numInNew - 1;
-                List<Worm> newTail = new List<Worm>();
+                int numInOld = totalSegs - numInNew;
+                List<Seg> newWorm = new List<Seg>();
                 for( int i = 0; i < numInNew; i++ )
                 {
-                    newTail.Add( tail[numInOld + i] );
-                    newTail.GetLast().isDetached = true;
+                    newWorm.Add( activeWorm[numInOld + i] );
+                    newWorm.GetLast().isHead = false;
+                    newWorm.GetLast().isActive = false;
                 }
-                detachedTails.Add(newTail);
-                tail.RemoveRange(numInOld, numInNew);
+                worms.Add(newWorm);
+                activeWorm.RemoveRange(numInOld, numInNew);
                 AudioSource.PlayClipAtPoint( split, transform.position );
+
+                // assign a key
+                int key = GetFreeWormKey();
+
+                if( key != -1 )
+                {
+                    key2worm[ key ] = newWorm;
+                    worm2key[newWorm] = key;
+                }
+            }
+        }
+
+        for( int key = 1; key < 9; key++ )
+        {
+            if( Input.GetKeyDown(""+key) && key2worm.ContainsKey(key) )
+            {
+                // switch to this worm
+                foreach( var seg in activeWorm )
+                {
+                    seg.isActive = false;
+                    seg.isHead = false;
+                }
+
+                activeWorm = key2worm[key];
+                foreach( var seg in activeWorm )
+                {
+                    seg.isActive = true;
+                    seg.isHead = false;
+                }
+                activeWorm.GetFirst().isHead = true;
             }
         }
 
@@ -193,14 +238,6 @@ public class MainController : MonoBehaviour {
 
         int dr = 0;
         int dc = 0;
-
-        /*
-        if( Input.GetKeyDown(KeyCode.W)
-                || Input.GetKeyDown(KeyCode.A)
-                || Input.GetKeyDown(KeyCode.S)
-                || Input.GetKeyDown(KeyCode.D) )
-            repeatTimer = -1;
-            */
 
         if( (repeatTimer < 0 && Input.GetKey(KeyCode.W) ) )
             dr -= 1;
@@ -213,14 +250,15 @@ public class MainController : MonoBehaviour {
 
         if( dr != 0 || dc != 0 )
         {
+            var head = activeWorm.GetFirst();
             var other = head.ent.Peek(dr, dc);
 
             if( other != null && other.GetComponent<LevelExit>() != null )
             {
-                if( detachedTails.Count > 0 )
+                if( worms.Count > 1 )
                 {
                     AudioSource.PlayClipAtPoint( error, transform.position );
-                    Debug.Log("detached tails in level!");
+                    Debug.Log("detached worms in level!");
                 }
                 // check for remaining fruits..
                 else if( map.entsRoot.GetComponentsInChildren<Fruit>().Length > 0 )
@@ -242,9 +280,10 @@ public class MainController : MonoBehaviour {
                     }
                 }
             }
-            else if( other != null && other.GetComponent<Worm>() != null )
+            else if( other != null && other.GetComponent<Seg>() != null
+                  && !other.GetComponent<Seg>().isActive )
             {
-                var hitBit = other.GetComponent<Worm>();
+                var hitBit = other.GetComponent<Seg>();
                 if( RemergeTail(hitBit) )
                 {
                     AudioSource.PlayClipAtPoint( merge, transform.position );
@@ -278,9 +317,10 @@ public class MainController : MonoBehaviour {
                 {
                     //AudioSource.PlayClipAtPoint( move, transform.position );
 
-                    // move all tail segments
-                    foreach( var seg in tail )
+                    // move all worm segments
+                    for( int i = 1; i < activeWorm.Count; i++ )
                     {
+                        var seg = activeWorm[i];
                         int r = seg.ent.row;
                         int c = seg.ent.col;
                         seg.ent.TryMove(lastSegRow-seg.ent.row, lastSegCol-seg.ent.col);
@@ -292,7 +332,7 @@ public class MainController : MonoBehaviour {
                 if( grew )
                 {
                     var newObj = map.SpawnPrefab( wormSegPrefab, lastSegRow, lastSegCol );
-                    tail.Add(newObj.GetComponent<Worm>());
+                    activeWorm.Add(newObj.GetComponent<Seg>());
                 }
             }
 
@@ -306,43 +346,44 @@ public class MainController : MonoBehaviour {
 
     }
 
-    bool RemergeTail( Worm hit )
+    bool RemergeTail( Seg hit )
     {
         // find the inactive tail that this bit is a part of
-        List<Worm> hitTail = null;
-        foreach( var tail in detachedTails )
+        List<Seg> hitWorm = null;
+        foreach( var worm in worms )
         {
             // is the hit piece the tail or head of this tail?
-            if( hit == tail.GetFirst() || hit == tail.GetLast() )
+            if( hit == worm.GetFirst() || hit == worm.GetLast() )
             {
-                hitTail = tail;
+                hitWorm = worm;
                 break;
             }
         }
 
-        if( hitTail == null )
+        if( hitWorm == null )
             return false;
         else
         {
-            detachedTails.Remove(hitTail);
+            // assimilate!
+            worms.Remove(hitWorm);
+            if( worm2key.ContainsKey(hitWorm) )
+            {
+                int key = worm2key[hitWorm];
+                worm2key.Remove(hitWorm);
+                key2worm.Remove(key);
+            }
 
             // reconnect so the new head is the OTHER end of the hit tail
-            if( hit == hitTail.GetFirst() )
-                hitTail.Reverse();
-
-            head.isHead = false;
-            hitTail.Add(head);
-            hitTail.AddRange(tail);
-            head = hitTail.GetFirst();
-            head.isHead = true;
-            head.isDetached = false;
-            hitTail.RemoveAt(0);
-
-            // discard old tail and replace with new
-            tail.Clear();
-            tail = hitTail;
-            foreach( var bit in tail )
-                bit.isDetached = false;
+            if( hit == hitWorm.GetFirst() )
+                hitWorm.Reverse();
+            activeWorm.GetFirst().isHead = false;
+            activeWorm.InsertRange(0, hitWorm);
+            foreach( var seg in activeWorm )
+            {
+                seg.isActive = true;
+                seg.isHead = false;
+            }
+            activeWorm.GetFirst().isHead = true;
             return true;
         }
     }

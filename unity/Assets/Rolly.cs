@@ -46,7 +46,7 @@ public class Rolly : MonoBehaviour {
             var other = ent.Peek(peek);
             if( other != null )
             {
-                if( other.GetComponent<Worm>() )
+                if( other.GetComponent<Seg>() )
                     seesPlayerNow = true;
                 else
                     // blocked by a wall or something
@@ -86,9 +86,9 @@ public class Rolly : MonoBehaviour {
             {
                 var other = ent.Peek( flip*delta );
                 // we hit a player?
-                if( other.GetComponent<Worm>() != null )
+                if( other.GetComponent<Seg>() != null )
                 {
-                    MainController.main.OnWormHit( other.GetComponent<Worm>(), gameObject );
+                    MainController.main.OnWormSegHit( other.GetComponent<Seg>(), gameObject );
                 }
                 else
                 {
