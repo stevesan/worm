@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetPixels: {x: 2, y: -2}
+  offsetPixels: {x: 1, y: -1}
   shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!132 &190261674
 GUIText:
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetPixels: {x: 2, y: -2}
+  offsetPixels: {x: 1, y: -1}
   shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!132 &303303574
 GUIText:
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetPixels: {x: 2, y: -2}
+  offsetPixels: {x: 1, y: -1}
   shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!132 &658997344
 GUIText:
@@ -439,7 +439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetPixels: {x: 2, y: -2}
+  offsetPixels: {x: 1, y: -1}
   shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!132 &1099013129
 GUIText:
@@ -593,7 +593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetPixels: {x: 2, y: -2}
+  offsetPixels: {x: 1, y: -1}
   shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!132 &1511609477
 GUIText:
@@ -677,6 +677,7 @@ MonoBehaviour:
   levelMapSrcs:
   - {fileID: 4900000, guid: d589b8c4d9dfc40359c89a860bf6e198, type: 3}
   - {fileID: 4900000, guid: f489236d189de4643aecb3d1be723178, type: 3}
+  - {fileID: 4900000, guid: d692ef1456bdb404da3d9c6bd676e903, type: 3}
   startScreen: {fileID: 1488912574}
   debriefScreen: {fileID: 786543098}
   deathScreen: {fileID: 1554481686}
@@ -686,6 +687,10 @@ MonoBehaviour:
   grow: {fileID: 8300000, guid: 59d3e91d321694fe08dcb8a7262c2514, type: 3}
   reverse: {fileID: 8300000, guid: a51bc604e89924a5ca23e52852b6fdb7, type: 3}
   die: {fileID: 8300000, guid: 60c3b49e8d2ba42069a6643989f6ba7c, type: 3}
+  error: {fileID: 8300000, guid: 4d9724ac814794f22838564283d3c5b1, type: 3}
+  split: {fileID: 8300000, guid: 91d6fa7be7008417282db60dcfac954e, type: 3}
+  merge: {fileID: 8300000, guid: 336c9bfaa73fe4ac082e247571b0398d, type: 3}
+  beatlevel: {fileID: 8300000, guid: cbc3bb3e868724844a2012a57ee8bec4, type: 3}
   repeatPeriod: .100000001
 --- !u!4 &1692764910
 Transform:
@@ -737,7 +742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetPixels: {x: 2, y: -2}
+  offsetPixels: {x: 1, y: -1}
   shadowColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!132 &1785378195
 GUIText:

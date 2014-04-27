@@ -8,6 +8,7 @@ public class Worm : MonoBehaviour
     public GameObject segmentPrefab;
 
     public bool isHead = false;
+    public bool isDetached = false;
 
     void Awake()
     {
@@ -18,7 +19,9 @@ public class Worm : MonoBehaviour
     {
         if( isHead )
             transform.localScale = new Vector3(1,1,1);
-        else
+        else if( isDetached )
             transform.localScale = new Vector3(0.5f,0.5f,0.5f);
+        else
+            transform.localScale = new Vector3(0.7f,0.7f,0.7f);
     }
 }

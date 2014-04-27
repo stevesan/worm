@@ -86,6 +86,8 @@ MonoBehaviour:
   dr: 1
   dc: 0
   secsPerMove: .5
+  alertSecsPerMove: .100000001
+  hasVision: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

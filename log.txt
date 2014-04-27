@@ -1,0 +1,5 @@
+
+level ideas:
+- curl up and hide (classic snake move)
+- get in and get out (get fruit, then quickly reverse before guard gets back)
+-

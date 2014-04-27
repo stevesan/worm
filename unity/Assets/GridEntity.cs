@@ -63,4 +63,9 @@ public class GridEntity : MonoBehaviour
         else
             return null;
     }
+
+    public bool CheckBounds(Int2 p)
+    {
+        return host.grid.CheckBounds(p.row, p.col);
+    }
 }

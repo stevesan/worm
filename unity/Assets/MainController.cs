@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using SteveSharp;
 
 public class MainController : MonoBehaviour {
 
@@ -17,6 +18,10 @@ public class MainController : MonoBehaviour {
     public AudioClip grow;
     public AudioClip reverse;
     public AudioClip die;
+    public AudioClip error;
+    public AudioClip split;
+    public AudioClip merge;
+    public AudioClip beatlevel;
     public float repeatPeriod = 0.1f;
 
     float repeatTimer = 0f;
@@ -24,6 +29,7 @@ public class MainController : MonoBehaviour {
     //----------------------------------------
     //  Game stuff
     //----------------------------------------
+    HashSet< List<Worm> > detachedTails = new HashSet< List<Worm> >();
     List<Worm> tail = new List<Worm>();
     Worm head;
 
@@ -72,6 +78,7 @@ public class MainController : MonoBehaviour {
         Debug.Log("found player ent = "+head.gameObject.name);
 
         tail.Clear();
+        detachedTails.Clear();
         
         state = "level";
     }
@@ -94,6 +101,16 @@ public class MainController : MonoBehaviour {
             //  Handle player input
             //----------------------------------------
             InLevelUpdate();
+
+            //----------------------------------------
+            //  Cheats
+            //----------------------------------------
+            if( Input.GetKeyDown(KeyCode.Equals) )
+                SwitchLevel(currLevel+1);
+            if( Input.GetKeyDown(KeyCode.Minus) )
+                SwitchLevel(currLevel-1);
+            if( Input.GetKeyDown(KeyCode.Alpha0) )
+                SwitchLevel(currLevel);
         }
         else if( state == "dead" )
         {
@@ -144,6 +161,28 @@ public class MainController : MonoBehaviour {
             AudioSource.PlayClipAtPoint( reverse, transform.position );
         }
 
+        if( Input.GetKeyDown(KeyCode.Space) )
+        {
+            if( tail.Count == 0 )
+                AudioSource.PlayClipAtPoint( error, transform.position );
+            else
+            {
+                // split in two!
+                int totalSegs = tail.Count + 1;
+                int numInNew = totalSegs / 2;
+                int numInOld = totalSegs - numInNew - 1;
+                List<Worm> newTail = new List<Worm>();
+                for( int i = 0; i < numInNew; i++ )
+                {
+                    newTail.Add( tail[numInOld + i] );
+                    newTail.GetLast().isDetached = true;
+                }
+                detachedTails.Add(newTail);
+                tail.RemoveRange(numInOld, numInNew);
+                AudioSource.PlayClipAtPoint( split, transform.position );
+            }
+        }
+
         repeatTimer -= Time.deltaTime;
 
         int dr = 0;
@@ -189,11 +228,34 @@ public class MainController : MonoBehaviour {
             }
             else if( other != null && other.GetComponent<LevelExit>() != null )
             {
-                state = "debrief";
-                debriefScreen.SetActive(true);
-                map.Clear();
-                head = null;
-                Debug.Log("beat level "+currLevel);
+                if( detachedTails.Count > 0 )
+                {
+                    AudioSource.PlayClipAtPoint( error, transform.position );
+                    Debug.Log("detached tails in level!");
+                }
+                // check for remaining fruits..
+                else if( map.entsRoot.GetComponentsInChildren<Fruit>().Length > 0 )
+                {
+                    AudioSource.PlayClipAtPoint( error, transform.position );
+                    Debug.Log("fruits remain!");
+                }
+                else
+                {
+                    state = "debrief";
+                    debriefScreen.SetActive(true);
+                    AudioSource.PlayClipAtPoint( beatlevel, transform.position );
+                    map.Clear();
+                    head = null;
+                    Debug.Log("beat level "+currLevel);
+                }
+            }
+            else if( other != null && other.GetComponent<Worm>() != null )
+            {
+                var hitBit = other.GetComponent<Worm>();
+                if( RemergeTail(hitBit) )
+                {
+                    AudioSource.PlayClipAtPoint( merge, transform.position );
+                }
             }
             else
             {
@@ -227,5 +289,46 @@ public class MainController : MonoBehaviour {
                 repeatTimer = repeatPeriod;
         }
 
+    }
+
+    bool RemergeTail( Worm hit )
+    {
+        // find the inactive tail that this bit is a part of
+        List<Worm> hitTail = null;
+        foreach( var tail in detachedTails )
+        {
+            // is the hit piece the tail or head of this tail?
+            if( hit == tail.GetFirst() || hit == tail.GetLast() )
+            {
+                hitTail = tail;
+                break;
+            }
+        }
+
+        if( hitTail == null )
+            return false;
+        else
+        {
+            detachedTails.Remove(hitTail);
+
+            // reconnect so the new head is the OTHER end of the hit tail
+            if( hit == hitTail.GetFirst() )
+                hitTail.Reverse();
+
+            head.isHead = false;
+            hitTail.Add(head);
+            hitTail.AddRange(tail);
+            head = hitTail.GetFirst();
+            head.isHead = true;
+            head.isDetached = false;
+            hitTail.RemoveAt(0);
+
+            // discard old tail and replace with new
+            tail.Clear();
+            tail = hitTail;
+            foreach( var bit in tail )
+                bit.isDetached = false;
+            return true;
+        }
     }
 }

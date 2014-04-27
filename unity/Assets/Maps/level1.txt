@@ -10,9 +10,9 @@ b..f..f..f.....b
 b..............b
 b....H.........b
 b..............b
-b..............b
-b..........bbbbb
-b.....bbbbbb...b
+b.....bbb......b
+b.....bbb..bbbbb
+b.......bbbb...b
 b......Vbbbbbbbb
 b.......bbbbbbbb
 b.....V....b...b
