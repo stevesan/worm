@@ -26,6 +26,8 @@ public class MainController : MonoBehaviour {
 
     float repeatTimer = 0f;
 
+    MultiKeyManager moveKeys = new MultiKeyManager();
+
     //----------------------------------------
     //  Game stuff
     //----------------------------------------
@@ -37,6 +39,11 @@ public class MainController : MonoBehaviour {
     void Awake()
     {
         main = this;
+
+        moveKeys.AddKey( KeyCode.W );
+        moveKeys.AddKey( KeyCode.A );
+        moveKeys.AddKey( KeyCode.S );
+        moveKeys.AddKey( KeyCode.D );
     }
 
     int GetFreeWormKey()
@@ -86,6 +93,7 @@ public class MainController : MonoBehaviour {
         worms.Clear();
         key2worm.Clear();
         worm2key.Clear();
+        moveKeys.Reset();
 
         // find the player and make it active
         var head = map.entsRoot.GetComponentInChildren<Seg>();
@@ -239,14 +247,19 @@ public class MainController : MonoBehaviour {
         int dr = 0;
         int dc = 0;
 
-        if( (repeatTimer < 0 && Input.GetKey(KeyCode.W) ) )
-            dr -= 1;
-        else if( (repeatTimer < 0 && Input.GetKey(KeyCode.S) ) )
-            dr += 1;
-        else if( (repeatTimer < 0 && Input.GetKey(KeyCode.A) ) )
-            dc -= 1;
-        else if( (repeatTimer < 0 && Input.GetKey(KeyCode.D) ) )
-            dc += 1;
+        KeyCode moveKey = moveKeys.Update();
+
+        if( repeatTimer < 0 )
+        {
+            if( moveKey == KeyCode.W )
+                dr -= 1;
+            else if( moveKey == KeyCode.S )
+                dr += 1;
+            else if( moveKey == KeyCode.A )
+                dc -= 1;
+            else if( moveKey == KeyCode.D )
+                dc += 1;
+        }
 
         if( dr != 0 || dc != 0 )
         {
