@@ -12,6 +12,14 @@ public class GridEntity : MonoBehaviour
     [HideInInspector]
     public MapSpawner host;
 
+    Vector3 transVel = Vector3.zero;
+
+    void Start()
+    {
+        // instantly teleport to initial position at first
+        transform.localPosition = new Vector3(col, -row, 0);
+    }
+
     public bool CanMove( Int2 delta )
     {
         return CanMove(delta.x, delta.y);
@@ -50,7 +58,11 @@ public class GridEntity : MonoBehaviour
 
     void LateUpdate()
     {
-        transform.localPosition = new Vector3(col, -row, 0); 
+        transform.localPosition = Vector3.SmoothDamp(
+                transform.localPosition,
+                new Vector3(col, -row, 0),
+                ref transVel,
+                0.02f);
     }
 
     public GridEntity Peek( Int2 u ) { return Peek(u.row, u.col); }

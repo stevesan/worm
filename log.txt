@@ -1,7 +1,9 @@
 
 DONE:
 - curl up and hide (classic snake move)
-
-TODO:
 level ideas:
 - get in and get out (get fruit, then quickly reverse before guard gets back)
+
+TODO:
+
+- controls: give priority to most recently downed key

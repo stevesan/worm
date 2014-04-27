@@ -215,24 +215,7 @@ public class MainController : MonoBehaviour {
         {
             var other = head.ent.Peek(dr, dc);
 
-            if( other != null
-                    && other.GetComponent<Fruit>() != null )
-            {
-                AudioSource.PlayClipAtPoint( grow, transform.position );
-
-                map.RemoveEntity(other);
-                Destroy(other.gameObject);
-
-                // create new worm segment
-                head.isHead = false;
-                tail.Insert(0,head);
-                int newRow = head.ent.row + dr;
-                int newCol = head.ent.col + dc;
-                var newObj = map.SpawnPrefab( wormSegPrefab, newRow, newCol );
-                head = newObj.GetComponent<Worm>();
-                head.isHead = true;
-            }
-            else if( other != null && other.GetComponent<LevelExit>() != null )
+            if( other != null && other.GetComponent<LevelExit>() != null )
             {
                 if( detachedTails.Count > 0 )
                 {
@@ -271,9 +254,23 @@ public class MainController : MonoBehaviour {
             }
             else
             {
-                // normal move
-                int oldRow = head.ent.row;
-                int oldCol = head.ent.col;
+                // do move
+
+                bool grew = false;
+                // but maybe eating a fruit?
+                if( other != null && other.GetComponent<Fruit>() != null )
+                {
+                    AudioSource.PlayClipAtPoint( grow, transform.position );
+
+                    map.RemoveEntity(other);
+                    Destroy(other.gameObject);
+
+                    // create new worm segment at end later
+                    grew = true;
+                }
+
+                int lastSegRow = head.ent.row;
+                int lastSegCol = head.ent.col;
 
                 if( !head.ent.TryMove(dr,dc) )
                     AudioSource.PlayClipAtPoint( bump, transform.position );
@@ -286,10 +283,16 @@ public class MainController : MonoBehaviour {
                     {
                         int r = seg.ent.row;
                         int c = seg.ent.col;
-                        seg.ent.TryMove(oldRow-seg.ent.row, oldCol-seg.ent.col);
-                        oldRow = r;
-                        oldCol = c;
+                        seg.ent.TryMove(lastSegRow-seg.ent.row, lastSegCol-seg.ent.col);
+                        lastSegRow = r;
+                        lastSegCol = c;
                     }
+                }
+
+                if( grew )
+                {
+                    var newObj = map.SpawnPrefab( wormSegPrefab, lastSegRow, lastSegCol );
+                    tail.Add(newObj.GetComponent<Worm>());
                 }
             }
 
