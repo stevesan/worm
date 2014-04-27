@@ -11,7 +11,7 @@ b..............b
 b....H.........b
 b..............b
 b.....bbb......b
-b.....bbb..bbbbb
+b.......b..bbbbb
 b.......bbbb...b
 b......Vbbbbbbbb
 b.......bbbbbbbb

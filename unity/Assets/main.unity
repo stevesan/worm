@@ -676,8 +676,11 @@ MonoBehaviour:
   map: {fileID: 1993314136}
   levelMapSrcs:
   - {fileID: 4900000, guid: d589b8c4d9dfc40359c89a860bf6e198, type: 3}
+  - {fileID: 4900000, guid: 6767e7a6cefbe48b9bb79fe4bf1d5e9c, type: 3}
+  - {fileID: 4900000, guid: 752e5b3c962084bcdb77c1262e892bca, type: 3}
   - {fileID: 4900000, guid: f489236d189de4643aecb3d1be723178, type: 3}
   - {fileID: 4900000, guid: d692ef1456bdb404da3d9c6bd676e903, type: 3}
+  - {fileID: 4900000, guid: 7f2cbafc0b2c847ed83317d2ab5355d3, type: 3}
   startScreen: {fileID: 1488912574}
   debriefScreen: {fileID: 786543098}
   deathScreen: {fileID: 1554481686}

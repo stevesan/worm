@@ -129,7 +129,8 @@ public class MainController : MonoBehaviour {
                     SwitchLevel(currLevel+1);
                 else
                 {
-                    // beat!
+                    // beat game!
+                    map.Clear();
                     startScreen.SetActive(true);
                     state = "start";
                 }
@@ -150,15 +151,20 @@ public class MainController : MonoBehaviour {
         //----------------------------------------
         if( Input.GetKeyDown(KeyCode.R) )
         {
-            // reverse head/tail
-            var oldHead = head;
-            head.isHead = false;
-            head = tail[tail.Count-1];
-            head.isHead = true;
-            tail.RemoveAt(tail.Count-1);
-            tail.Reverse();
-            tail.Add(oldHead);
-            AudioSource.PlayClipAtPoint( reverse, transform.position );
+            if( tail.Count == 0 )
+                AudioSource.PlayClipAtPoint( error, transform.position );
+            else
+            {
+                // reverse head/tail
+                var oldHead = head;
+                head.isHead = false;
+                head = tail[tail.Count-1];
+                head.isHead = true;
+                tail.RemoveAt(tail.Count-1);
+                tail.Reverse();
+                tail.Add(oldHead);
+                AudioSource.PlayClipAtPoint( reverse, transform.position );
+            }
         }
 
         if( Input.GetKeyDown(KeyCode.Space) )
@@ -241,12 +247,16 @@ public class MainController : MonoBehaviour {
                 }
                 else
                 {
-                    state = "debrief";
-                    debriefScreen.SetActive(true);
                     AudioSource.PlayClipAtPoint( beatlevel, transform.position );
-                    map.Clear();
-                    head = null;
-                    Debug.Log("beat level "+currLevel);
+
+                    if( currLevel+1 < levelMapSrcs.Length )
+                        SwitchLevel(currLevel+1);
+                    else
+                    {
+                        // beat!
+                        startScreen.SetActive(true);
+                        state = "start";
+                    }
                 }
             }
             else if( other != null && other.GetComponent<Worm>() != null )
@@ -256,6 +266,8 @@ public class MainController : MonoBehaviour {
                 {
                     AudioSource.PlayClipAtPoint( merge, transform.position );
                 }
+                else
+                    AudioSource.PlayClipAtPoint( error, transform.position );
             }
             else
             {
@@ -267,7 +279,7 @@ public class MainController : MonoBehaviour {
                     AudioSource.PlayClipAtPoint( bump, transform.position );
                 else
                 {
-                    AudioSource.PlayClipAtPoint( move, transform.position );
+                    //AudioSource.PlayClipAtPoint( move, transform.position );
 
                     // move all tail segments
                     foreach( var seg in tail )
