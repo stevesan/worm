@@ -10,6 +10,8 @@ public class Rolly : MonoBehaviour {
 
     public float alertSecsPerMove = 0.1f;
     public bool hasVision = false;
+    public Material alertedVisionMaterial;
+    public Material normalVisionMaterial;
 
     Int2 delta { get { return new Int2(dr, dc); } }
     float moveTimer = 0f;
@@ -18,10 +20,12 @@ public class Rolly : MonoBehaviour {
 
     GridEntity ent;
 
+    LineRenderer line;
+
 	// Use this for initialization
 	void Awake() {
         ent = GetComponent<GridEntity>();
-	
+        line = GetComponent<LineRenderer>();
 	}
 
     void UpdateVision()
@@ -59,6 +63,14 @@ public class Rolly : MonoBehaviour {
             moveTimer = -1;
         }
         seesPlayer = seesPlayerNow;
+
+        line.SetVertexCount(2);
+        line.SetPosition(0, transform.position);
+        line.SetPosition(1, transform.position
+                + (Vector3.right * (steps*flip*delta).col)
+                + (Vector3.up * -1*(steps*flip*delta).row) );
+        line.SetWidth(0, 1);
+        line.material = seesPlayer ? alertedVisionMaterial : normalVisionMaterial;
     }
 	
 	// Update is called once per frame
