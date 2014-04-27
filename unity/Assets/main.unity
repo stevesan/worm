@@ -138,6 +138,70 @@ GUIText:
     rgba: 4294967295
   m_PixelCorrect: 1
   m_RichText: 1
+--- !u!1 &206006577
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 206006580}
+  - 132: {fileID: 206006578}
+  - 114: {fileID: 206006579}
+  m_Layer: 0
+  m_Name: TutorialText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!132 &206006578
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 206006577}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: 
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: d2a3e90e51a1f45339a904e63dd29062, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 32
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_PixelCorrect: 1
+  m_RichText: 1
+--- !u!114 &206006579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 206006577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c778b564eec47fd960b32b07d6be8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offsetPixels: {x: 1, y: -1}
+  shadowColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!4 &206006580
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 206006577}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .5, y: .949999988, z: -.0136719998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &303303572
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +390,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -407,7 +471,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 658997342}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: .300000012, z: -.013671875}
+  m_LocalPosition: {x: 1.75, y: .300000012, z: -.013671875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488912575}
@@ -792,17 +856,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   map: {fileID: 1993314136}
-  levelMapSrcs:
-  - {fileID: 4900000, guid: d589b8c4d9dfc40359c89a860bf6e198, type: 3}
-  - {fileID: 4900000, guid: 6767e7a6cefbe48b9bb79fe4bf1d5e9c, type: 3}
-  - {fileID: 4900000, guid: 752e5b3c962084bcdb77c1262e892bca, type: 3}
-  - {fileID: 4900000, guid: f489236d189de4643aecb3d1be723178, type: 3}
-  - {fileID: 4900000, guid: d692ef1456bdb404da3d9c6bd676e903, type: 3}
-  - {fileID: 4900000, guid: 7f2cbafc0b2c847ed83317d2ab5355d3, type: 3}
-  - {fileID: 4900000, guid: 1b15b8c8ed98a4b75a889c93f8406a84, type: 3}
   startScreen: {fileID: 1488912574}
   debriefScreen: {fileID: 786543098}
   deathScreen: {fileID: 1554481686}
+  tutorialText: {fileID: 206006578}
+  levels:
+  - name: reverse
+    map: {fileID: 4900000, guid: d589b8c4d9dfc40359c89a860bf6e198, type: 3}
+    tutorial: R to switch head and butt
+  - name: tunnel
+    map: {fileID: 4900000, guid: 7f2cbafc0b2c847ed83317d2ab5355d3, type: 3}
+    tutorial: 
+  - name: fetal
+    map: {fileID: 4900000, guid: 752e5b3c962084bcdb77c1262e892bca, type: 3}
+    tutorial: 
+  - name: intro
+    map: {fileID: 4900000, guid: 32c88875f3b2a42aaa83a291dfb9f1b6, type: 3}
+    tutorial: WASD to move
+  - name: inout
+    map: {fileID: 4900000, guid: 6767e7a6cefbe48b9bb79fe4bf1d5e9c, type: 3}
+    tutorial: 
+  - name: run
+    map: {fileID: 4900000, guid: f489236d189de4643aecb3d1be723178, type: 3}
+    tutorial: 
+  - name: split
+    map: {fileID: 4900000, guid: 1b15b8c8ed98a4b75a889c93f8406a84, type: 3}
+    tutorial: Space bar to split in half
+  - name: waithere
+    map: {fileID: 4900000, guid: d692ef1456bdb404da3d9c6bd676e903, type: 3}
+    tutorial: 
   wormSegPrefab: {fileID: 100000, guid: 809de2b0cd11f44428413f8c7e544e27, type: 2}
   bump: {fileID: 8300000, guid: 4d9724ac814794f22838564283d3c5b1, type: 3}
   move: {fileID: 8300000, guid: 2140f1174999b46caacf56eed42f7c94, type: 3}
@@ -1001,7 +1083,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1993314135}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.5, y: 10.5, z: 0}
+  m_LocalPosition: {x: -7.5, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

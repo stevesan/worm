@@ -7,10 +7,30 @@ public class MainController : MonoBehaviour {
     public static MainController main = null;
 
     public MapSpawner map;
-    public TextAsset[] levelMapSrcs;
     public GameObject startScreen;
     public GameObject debriefScreen;
     public GameObject deathScreen;
+    public GUIText tutorialText;
+
+    [System.Serializable]
+    public class Level
+    {
+        public string name;
+        public TextAsset map;
+        public string tutorial = "";
+    }
+    public Level[] levels;
+
+    string[] levelOrder = {
+        "intro",
+        "tunnel",
+        "reverse",
+        "inout",
+        "fetal",
+        "run",
+        "split",
+        "waithere"
+    };
 
     public GameObject wormSegPrefab;
     public AudioClip bump;
@@ -29,6 +49,11 @@ public class MainController : MonoBehaviour {
     MultiKeyManager moveKeys = new MultiKeyManager();
 
     //----------------------------------------
+    //  Map database
+    //----------------------------------------
+    Dictionary<string, Level> name2level = new Dictionary<string, Level>();
+
+    //----------------------------------------
     //  Game stuff
     //----------------------------------------
     HashSet< List<Seg> > worms = new HashSet< List<Seg> >();
@@ -44,6 +69,13 @@ public class MainController : MonoBehaviour {
         moveKeys.AddKey( KeyCode.A );
         moveKeys.AddKey( KeyCode.S );
         moveKeys.AddKey( KeyCode.D );
+
+        name2level.Clear();
+        foreach( var level in levels )
+        {
+            if( level.map != null )
+                name2level[level.name] = level;
+        }
     }
 
     int GetFreeWormKey()
@@ -80,14 +112,15 @@ public class MainController : MonoBehaviour {
 
     void SwitchLevel( int level )
     {
-        if( level >= levelMapSrcs.Length )
+        if( level >= levelOrder.Length )
         {
             Debug.LogError("no map src for level "+level);
             return;
         }
 
         currLevel = level;
-        map.Spawn(levelMapSrcs[level].text);
+        string levelName = levelOrder[level];
+        map.Spawn( name2level[ levelName ].map.text );
 
         activeWorm.Clear();
         worms.Clear();
@@ -105,6 +138,8 @@ public class MainController : MonoBehaviour {
         worms.Add(activeWorm);
         key2worm[1] = activeWorm;
         worm2key[activeWorm] = 1;
+
+        tutorialText.text = name2level[levelName].tutorial;
         
         state = "level";
     }
@@ -151,7 +186,7 @@ public class MainController : MonoBehaviour {
             if( InputStack.IsActive(this) && Input.GetKeyDown(KeyCode.Space) )
             {
                 debriefScreen.SetActive(false);
-                if( currLevel+1 < levelMapSrcs.Length )
+                if( currLevel+1 < levelOrder.Length )
                     SwitchLevel(currLevel+1);
                 else
                 {
@@ -167,6 +202,20 @@ public class MainController : MonoBehaviour {
         }
     }
 
+    void ThrobOutstandingItems()
+    {
+        foreach( var seg in map.entsRoot.GetComponentsInChildren<Seg>() )
+        {
+            if( !seg.isActive )
+                seg.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        }
+
+        foreach( var fruit in map.entsRoot.GetComponentsInChildren<Fruit>() )
+        {
+            fruit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        }
+    }
+
     void InLevelUpdate()
     {
         if( !InputStack.IsActive(this) )
@@ -177,7 +226,7 @@ public class MainController : MonoBehaviour {
         //----------------------------------------
         if( Input.GetKeyDown(KeyCode.R) )
         {
-            if( activeWorm.Count == 0 )
+            if( activeWorm.Count == 1 )
                 AudioSource.PlayClipAtPoint( error, transform.position );
             else
             {
@@ -191,7 +240,7 @@ public class MainController : MonoBehaviour {
 
         if( Input.GetKeyDown(KeyCode.Space) )
         {
-            if( activeWorm.Count == 0 )
+            if( activeWorm.Count == 1 )
                 AudioSource.PlayClipAtPoint( error, transform.position );
             else
             {
@@ -271,19 +320,21 @@ public class MainController : MonoBehaviour {
                 if( worms.Count > 1 )
                 {
                     AudioSource.PlayClipAtPoint( error, transform.position );
+                    ThrobOutstandingItems();
                     Debug.Log("detached worms in level!");
                 }
                 // check for remaining fruits..
                 else if( map.entsRoot.GetComponentsInChildren<Fruit>().Length > 0 )
                 {
                     AudioSource.PlayClipAtPoint( error, transform.position );
+                    ThrobOutstandingItems();
                     Debug.Log("fruits remain!");
                 }
                 else
                 {
                     AudioSource.PlayClipAtPoint( beatlevel, transform.position );
 
-                    if( currLevel+1 < levelMapSrcs.Length )
+                    if( currLevel+1 < levelOrder.Length )
                         SwitchLevel(currLevel+1);
                     else
                     {
@@ -302,6 +353,7 @@ public class MainController : MonoBehaviour {
                     AudioSource.PlayClipAtPoint( merge, transform.position );
                 }
                 else
+                    // hit a non-head or tail of the inactive worm. can't merge there.
                     AudioSource.PlayClipAtPoint( error, transform.position );
             }
             else
@@ -332,6 +384,8 @@ public class MainController : MonoBehaviour {
                         var newSeg = map.SpawnPrefab( wormSegPrefab, endPos.row, endPos.col );
                         activeWorm.Add(newSeg.GetComponent<Seg>());
                     }
+                    else
+                        AudioSource.PlayClipAtPoint( move, transform.position );
                 }
             }
 

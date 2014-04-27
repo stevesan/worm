@@ -8,7 +8,7 @@ b..............b
 bbbbbbbbb......b
 b..f..f..f.....b
 b..bbbbbbbbbbbbb
-b...H..........b
+bH.............b
 bbbbbbb..bbbbb.b
 bbbbbbb..bbbbb.b
 bbbbbbbbbbbbbb.b
