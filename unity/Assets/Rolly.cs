@@ -106,12 +106,12 @@ public class Rolly : MonoBehaviour {
 
         if( seesPlayer )
         {
-            ent.smoothTime = alertSecsPerMove;
+            ent.smoothTime = alertSecsPerMove*0.5f;
             transform.localScale = new Vector3(1.2f, 1.2f, 1f);
         }
         else
         {
-            ent.smoothTime = secsPerMove;
+            ent.smoothTime = secsPerMove*0.5f;
             transform.localScale = new Vector3(1f, 1f, 1f);
         }
 

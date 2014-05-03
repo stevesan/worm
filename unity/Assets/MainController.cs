@@ -46,7 +46,7 @@ public class MainController : MonoBehaviour {
 
     float repeatTimer = 0f;
 
-    MultiKeyManager moveKeys = new MultiKeyManager();
+    MultiKeyManager keyMgr;
 
     //----------------------------------------
     //  Map database
@@ -64,11 +64,6 @@ public class MainController : MonoBehaviour {
     void Awake()
     {
         main = this;
-
-        moveKeys.AddKey( KeyCode.W );
-        moveKeys.AddKey( KeyCode.A );
-        moveKeys.AddKey( KeyCode.S );
-        moveKeys.AddKey( KeyCode.D );
 
         name2level.Clear();
         foreach( var level in levels )
@@ -105,6 +100,13 @@ public class MainController : MonoBehaviour {
         debriefScreen.SetActive(false);
         deathScreen.SetActive(false);
         startScreen.SetActive(true);
+
+        keyMgr = GetComponent<MultiKeyManager>();
+        keyMgr.AddKey( KeyCode.W );
+        keyMgr.AddKey( KeyCode.A );
+        keyMgr.AddKey( KeyCode.S );
+        keyMgr.AddKey( KeyCode.D );
+
     }
 
     string state = "start";
@@ -126,7 +128,7 @@ public class MainController : MonoBehaviour {
         worms.Clear();
         key2worm.Clear();
         worm2key.Clear();
-        moveKeys.Reset();
+        keyMgr.Reset();
 
         // find the player and make it active
         var head = map.entsRoot.GetComponentInChildren<Seg>();
@@ -296,7 +298,7 @@ public class MainController : MonoBehaviour {
         int dr = 0;
         int dc = 0;
 
-        KeyCode moveKey = moveKeys.Update();
+        KeyCode moveKey = keyMgr.GetActiveKey();
 
         if( repeatTimer < 0 )
         {
@@ -339,6 +341,7 @@ public class MainController : MonoBehaviour {
                     else
                     {
                         // beat!
+                        map.Clear();
                         startScreen.SetActive(true);
                         state = "start";
                     }

@@ -29,5 +29,13 @@ namespace SteveSharp
         {
             return list[ list.Count-1 ];
         }
+
+        public static V GetSafe<K,V>( this Dictionary<K,V> dict, K key, V ifDNEValue )
+        {
+            if( !dict.ContainsKey(key) )
+                return ifDNEValue;
+            else
+                return dict[key];
+        }
     }
 }
