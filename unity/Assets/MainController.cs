@@ -304,10 +304,10 @@ public class MainController : MonoBehaviour {
         int dr = 0;
         int dc = 0;
 
-        KeyCode moveKey = keyMgr.GetActiveKey();
-
         if( repeatTimer < 0 )
         {
+            KeyCode moveKey = keyMgr.GetActiveKey();
+
             if( moveKey == KeyCode.W )
                 dr -= 1;
             else if( moveKey == KeyCode.S )

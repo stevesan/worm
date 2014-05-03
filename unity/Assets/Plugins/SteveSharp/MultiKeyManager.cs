@@ -6,13 +6,24 @@ namespace SteveSharp
 {
     public class MultiKeyManager : MonoBehaviour
     {
-        public float downSustainTime;
+        public float maxCommandBufferedTime;
 
         HashSet<KeyCode> keys = new HashSet<KeyCode>();
         Dictionary<KeyCode, int> downFrames = new Dictionary<KeyCode, int>();
-        Dictionary<KeyCode, float> downSustainTimers = new Dictionary<KeyCode, float>();
 
-        KeyCode activeKey = KeyCode.None;
+        public class Command
+        {
+            public KeyCode key;
+            public float time;
+            public Command( KeyCode key, float time )
+            {
+                this.key = key;
+                this.time = time;
+            }
+        }
+        Queue<Command> commandQueue = new Queue<Command>();
+
+        KeyCode latestHeldKey = KeyCode.None;
 
         public void AddKey( KeyCode code )
         {
@@ -22,7 +33,7 @@ namespace SteveSharp
         public void Reset()
         {
             downFrames.Clear();
-            downSustainTimers.Clear();
+            commandQueue.Clear();
         }
 
         int lastUpdatedFrame = -1;
@@ -32,15 +43,27 @@ namespace SteveSharp
             InternalUpdate();
         }
 
+        // Call this to query the "active key" when the game is ready to respond to something
         public KeyCode GetActiveKey()
         {
             InternalUpdate();
-            return activeKey;
-        }
 
-        bool IsKeyHeldOrSustained(KeyCode code)
-        {
-            return Input.GetKey(code) || downSustainTimers.GetSafe(code, -1f) > 0f;
+            // any valid commands which should 
+            while( commandQueue.Count > 0 )
+            {
+                var com = commandQueue.Dequeue();
+                if( com.time < Time.time-maxCommandBufferedTime )
+                {
+                    // command is dead..ignore
+                }
+                else
+                {
+                    // command is live - return it
+                    return com.key;
+                }
+            }
+
+            return latestHeldKey;
         }
 
         private void InternalUpdate()
@@ -51,36 +74,30 @@ namespace SteveSharp
             lastUpdatedFrame = Time.frameCount;
 
             // update states
-            foreach( var code in keys )
+            foreach( var key in keys )
             {
-                if( Input.GetKeyDown(code) )
+                if( Input.GetKeyDown(key) )
                 {
-                    downFrames[code] = Time.frameCount;
-                    downSustainTimers[code] = downSustainTime+Time.deltaTime;
+                    downFrames[key] = Time.frameCount;
+                    commandQueue.Enqueue( new Command(key, Time.time) );
                 }
-
-                // tick down down-sustain timers
-                if( downSustainTimers.ContainsKey(code) )
-                    downSustainTimers[code] = downSustainTimers[code] - Time.deltaTime;
             }
 
-            // return the key that is still down with the most recent down time
+            // update the hold key
             int latestFrame = -1;
-            KeyCode bestCode = KeyCode.None;
-            foreach( var code in keys )
+            latestHeldKey = KeyCode.None;
+            foreach( var key in keys )
             {
-                int frame = downFrames.ContainsKey(code) ?
-                    downFrames[code] :
+                int frame = downFrames.ContainsKey(key) ?
+                    downFrames[key] :
                     -1;
 
-                if( IsKeyHeldOrSustained(code) && frame > latestFrame )
+                if( Input.GetKey(key) && frame > latestFrame )
                 {
                     latestFrame = frame;
-                    bestCode = code;
+                    latestHeldKey = key;
                 }
             }
-
-            activeKey = bestCode;
         }
     }
 }
