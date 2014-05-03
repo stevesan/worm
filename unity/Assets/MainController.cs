@@ -175,11 +175,11 @@ public class MainController : MonoBehaviour {
             //  Cheats
             //----------------------------------------
             if( Input.GetKeyDown(KeyCode.Equals) )
-                SwitchLevel(currLevel+1, false);
+                SwitchLevel(currLevel+1);
             if( Input.GetKeyDown(KeyCode.Minus) )
-                SwitchLevel(currLevel-1, false);
+                SwitchLevel(currLevel-1);
             if( Input.GetKeyDown(KeyCode.Alpha0) )
-                SwitchLevel(currLevel, false);
+                SwitchLevel(currLevel);
         }
         else if( state == "dead" )
         {
