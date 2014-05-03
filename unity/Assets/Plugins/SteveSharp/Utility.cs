@@ -108,6 +108,28 @@ namespace SteveSharp
 
             return x;
         }
+
+        public static Vector3 UpdateLerp(
+                Vector3 curr,
+                Vector3 goal,
+                ref Vector3 lastStart,  // used to store the last start position
+                float time )
+        {
+            if( Vector3.Distance(curr, goal) < 1e-4 )
+            {
+                curr = goal;
+                lastStart = goal;
+            }
+            else
+            {
+                Vector3 dir = (goal-curr).normalized;
+                float speed = Vector3.Distance(goal,lastStart) / time;
+                curr += Vector3.ClampMagnitude(
+                        dir*speed*Time.deltaTime,
+                        Vector3.Distance(goal, curr) );
+            }
+            return curr;
+        }
     }
 
 }

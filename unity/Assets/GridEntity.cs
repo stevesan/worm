@@ -21,6 +21,11 @@ public class GridEntity : MonoBehaviour
         transform.localPosition = new Vector3(col, -row, 0);
     }
 
+    public Vector3 GetSnappedPosition()
+    {
+        return host.transform.TransformPoint( new Vector3( col, -row, 0 ) );
+    }
+
     public bool CanMove( Int2 delta )
     {
         return CanMove(delta.x, delta.y);
@@ -59,7 +64,15 @@ public class GridEntity : MonoBehaviour
 
     void LateUpdate()
     {
+        /*
         transform.localPosition = Vector3.SmoothDamp(
+                transform.localPosition,
+                new Vector3(col, -row, 0),
+                ref transVel,
+                smoothTime);
+                */
+
+        transform.localPosition = Utility.UpdateLerp(
                 transform.localPosition,
                 new Vector3(col, -row, 0),
                 ref transVel,

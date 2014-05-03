@@ -66,7 +66,7 @@ public class Rolly : MonoBehaviour {
 
         line.SetVertexCount(2);
         line.SetPosition(0, transform.position);
-        line.SetPosition(1, transform.position
+        line.SetPosition(1, ent.GetSnappedPosition()
                 + (Vector3.right * (steps*flip*delta).col)
                 + (Vector3.up * -1*(steps*flip*delta).row) );
         line.SetWidth(0, 1);
