@@ -100,6 +100,7 @@ public class MainController : MonoBehaviour {
         debriefScreen.SetActive(false);
         deathScreen.SetActive(false);
         startScreen.SetActive(true);
+        tutorialText.gameObject.SetActive(false);
 
         keyMgr = GetComponent<MultiKeyManager>();
         keyMgr.AddKey( KeyCode.W );
@@ -112,7 +113,7 @@ public class MainController : MonoBehaviour {
     string state = "start";
     int currLevel = 0;
 
-    void SwitchLevel( int level )
+    void SwitchLevel( int level, bool animTutorial = true )
     {
         if( level >= levelOrder.Length )
         {
@@ -141,7 +142,12 @@ public class MainController : MonoBehaviour {
         key2worm[1] = activeWorm;
         worm2key[activeWorm] = 1;
 
+        tutorialText.gameObject.SetActive(true);
         tutorialText.text = name2level[levelName].tutorial;
+        if( animTutorial )
+        {
+            tutorialText.GetComponent<SimpleAnimator>().Play();
+        }
         
         state = "level";
     }
@@ -169,18 +175,18 @@ public class MainController : MonoBehaviour {
             //  Cheats
             //----------------------------------------
             if( Input.GetKeyDown(KeyCode.Equals) )
-                SwitchLevel(currLevel+1);
+                SwitchLevel(currLevel+1, false);
             if( Input.GetKeyDown(KeyCode.Minus) )
-                SwitchLevel(currLevel-1);
+                SwitchLevel(currLevel-1, false);
             if( Input.GetKeyDown(KeyCode.Alpha0) )
-                SwitchLevel(currLevel);
+                SwitchLevel(currLevel, false);
         }
         else if( state == "dead" )
         {
             if( InputStack.IsActive(this) && Input.GetKeyDown(KeyCode.Space) )
             {
                 deathScreen.SetActive(false);
-                SwitchLevel(currLevel);
+                SwitchLevel(currLevel, false);
             }
         }
         else if( state == "debrief" )
